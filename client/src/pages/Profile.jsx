@@ -15,10 +15,10 @@ const Profile = () => {
   }, []);
 
   return (
-    <div className='text-2xl'>
-        <h2>Profile</h2>
-        <h3>{userInfo?.name}</h3>    
-        <p>{userInfo?.email}</p>
+    <div className='max-w-md mx-auto p-6 bg-white shadow rounded text-center'>
+        <h2 className='text-2xl font-bold mb-4'>Profile</h2>
+        <h3 className='text-lg mb-2'>{userInfo?.name}</h3>    
+        <p className='text-gray-600'>{userInfo?.email}</p>
     </div>
   )
 }   

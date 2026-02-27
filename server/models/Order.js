@@ -11,7 +11,6 @@ const orderSchema = new mongoose.Schema(
       {
         name: String,
         qty: Number,
-        image: String,
         price: Number,
         product: {
           type: mongoose.Schema.Types.ObjectId,

@@ -12,7 +12,6 @@ const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 
 dotenv.config();
-
 const app = express();
 
 app.use( helmet());
@@ -21,10 +20,7 @@ app.use( cors({
     credentials: true,
   })
 );
-
 app.use(morgan('dev'));
-
-
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -37,9 +33,7 @@ app.use('/api/orders', orderRoutes);
 
 // page not found
 app.use((req, res, next) => {
-    const error = new Error(`Not Found - ${req.originalUrl}`);
-    res.status(404);
-    next(error); 
+  throw new AppError(`Not Found - ${req.originalUrl}!`, 404);
 });
 
 app.use(errorHandler);

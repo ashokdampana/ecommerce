@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/ProductForm.css'
 
 const ProductForm = ({ product }) => {
   const [forms, setForms] = useState({
@@ -42,15 +41,64 @@ const ProductForm = ({ product }) => {
   return (
     <div >
       {/* <h2>Update Product</h2> */}
-      <form onSubmit={handleSubmit} className='product-form'>
-        <input name="name" value={forms.name} onChange={handleChange} placeholder="Name" />
-        <input name="image" value={forms.image} onChange={handleChange} placeholder="Image URL" />
-        <input name="brand" value={forms.brand} onChange={handleChange} placeholder="Brand" />
-        <input name="category" value={forms.category} onChange={handleChange} placeholder="Category" />
-        <input name="description" value={forms.description} onChange={handleChange} placeholder="Description" />
-        <input name="price" type="number" value={forms.price} onChange={handleChange} placeholder="Price" />
-        <input name="countInStock" type="number" value={forms.countInStock} onChange={handleChange} placeholder="In Stock" />
-        <button type="submit">Submit</button>
+      <form onSubmit={handleSubmit} className='flex flex-col gap-3 max-w-lg'>
+        <input
+          name="name"
+          value={forms.name}
+          onChange={handleChange}
+          placeholder="Name"
+          className="p-2 border rounded"
+        />
+        <input
+          name="image"
+          value={forms.image}
+          onChange={handleChange}
+          placeholder="Image URL"
+          className="p-2 border rounded"
+        />
+        <input
+          name="brand"
+          value={forms.brand}
+          onChange={handleChange}
+          placeholder="Brand"
+          className="p-2 border rounded"
+        />
+        <input
+          name="category"
+          value={forms.category}
+          onChange={handleChange}
+          placeholder="Category"
+          className="p-2 border rounded"
+        />
+        <input
+          name="description"
+          value={forms.description}
+          onChange={handleChange}
+          placeholder="Description"
+          className="p-2 border rounded"
+        />
+        <input
+          name="price"
+          type="number"
+          value={forms.price}
+          onChange={handleChange}
+          placeholder="Price"
+          className="p-2 border rounded"
+        />
+        <input
+          name="countInStock"
+          type="number"
+          value={forms.countInStock}
+          onChange={handleChange}
+          placeholder="In Stock"
+          className="p-2 border rounded"
+        />
+        <button
+          type="submit"
+          className="mt-2 bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+        >
+          Submit
+        </button>
       </form>
     </div>
   );
