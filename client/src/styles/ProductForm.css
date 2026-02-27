@@ -1,0 +1,36 @@
+.product-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* adds consistent spacing between inputs */
+    max-width: 500px; /* optional: limit form width */
+}
+
+.product-form input {
+    min-width: 400px;
+    padding: 10px 12px; /* makes typing comfortable */
+    border: 1px solid #ccc; /* subtle border */
+    border-radius: 6px; /* rounded corners */
+    font-size: 16px; /* readable text */
+    transition: border-color 0.2s, box-shadow 0.2s; /* smooth focus effect */
+}
+
+.product-form input:focus {
+    border-color: #3b82f6; /* blue border on focus */
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); /* soft glow */
+    outline: none; /* remove default outline */
+}
+
+.product-form button {
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: none;
+    background-color: #3b82f6; /* blue background */
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.product-form button:hover {
+    background-color: #2563eb; /* darker blue on hover */
+}
