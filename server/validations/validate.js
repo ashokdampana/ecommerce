@@ -4,7 +4,7 @@ const AppError = require('../utils/AppError');
 exports.registerValid = (req, res, next) => {
     const registerSchema = z.object({
         name: z.string().min(1, 'Name is required'),
-        email: z.email('Invalid email address'),
+        email: z.string().email('Invalid email address'),
         password: z.string().min(6, 'Password must be at least 6 characters'),
     });
     const result = registerSchema.safeParse(req.body);
@@ -17,7 +17,7 @@ exports.registerValid = (req, res, next) => {
 
 exports.loginValid = (req, res, next) => {
     const loginSchema = z.object({
-        email: z.email('Invalid email address'),
+        email: z.string().email('Invalid email address'),
         password: z.string().min(6, 'Password must be at least 6 characters'),
     });
 

@@ -18,7 +18,12 @@ exports.registerUser = asyncHandler(async (req, res) => {
   if (!newUser) {
     throw new AppError("Something went wrong. Please try again later", 400);
   }
-  res.status(201).json({ success: true, message: "User registered" });
+
+  // generate token and return same shape as login (simplifies frontend flow)
+  const userDetails = { name: newUser.name, email: newUser.email, isAdmin: newUser.isAdmin };
+  const token = jwt.sign(userDetails, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+  res.status(201).json({ success: true, message: "User registered", user: userDetails, token });
 });
 
 

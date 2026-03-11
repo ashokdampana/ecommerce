@@ -1,53 +1,40 @@
-import React, { createContext, useState, useEffect } from 'react';
-import api from '../services/api.js';
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable react-refresh/only-export-components */
+import React, { createContext, useContext, useState } from 'react';
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext();
+export const useAuthContext = useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
+
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem('user');
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  const token = localStorage.getItem('token');
+  const [token, setToken] = useState(() => localStorage.getItem('token'));
 
-  // 🔥 If token exists but user missing → verify with backend
-  useEffect(() => {
-    const checkAuth = async () => {
-      const res = await api.get('/api/auth/check_me');
-      setUser(res.data.user);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
-    };
-
-    if (token && !user) {
-      checkAuth().catch(() => {}); // axios interceptors handle 401 error
-    }
-  }, [token, user]);
-
-  const login = async (email, password) => {
-    const res = await api.post('/api/auth/login', { email, password });
-
-    setUser(res.data.user);
-    localStorage.setItem('user', JSON.stringify(res.data.user));
-    localStorage.setItem('token', res.data.token);
-
-    return res;
-  };
-
-  const register = async (name, email, password) => {
-    return await api.post('/api/auth/register', {name, email, password });
+  const login = (userData, userToken) => {
+    setUser(userData);
+    setToken(userToken);
+    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('token', userToken);
   };
 
   const logout = () => {
+    setUser(null);
+    setToken(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    setUser(null);
   };
 
+
+  const isAuthenticated = !!token && !!user;
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, token, login, logout, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );
 };
+

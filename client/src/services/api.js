@@ -1,5 +1,4 @@
 import axios from 'axios';
-import AppError from '../utils/AppError.js';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
@@ -26,17 +25,12 @@ api.interceptors.response.use(
     const status = error.response?.status;
 
     if (status === 401) {
-      localStorage.clear('user');
-      localStorage.clear('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      
       window.location.href = '/login';
-      throw new AppError('Unauthorized. Please log in again.', 401);
     }
-
-    if (status >= 500) {
-      throw new AppError('Server error. Try again later.', status);
-    }
-
-    throw new AppError(error.message || 'API Error', status || 500);
+    return Promise.reject(error);
   }
 );
 
