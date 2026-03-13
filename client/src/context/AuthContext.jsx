@@ -1,9 +1,9 @@
-/* eslint-disable react-hooks/rules-of-hooks */
+
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState } from 'react';
 
-export const AuthContext = createContext();
-export const useAuthContext = useContext(AuthContext);
+const AuthContext = createContext();
+export const useAuthContext = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
 

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import useTanMutation from '../hooks/useTanMutation.js';
-import useAuthContext from '../context/AuthContext.jsx';
+import { useAuthContext } from '../context/AuthContext.jsx';
 
 const registerSchema = Yup.object().shape({
   name: Yup.string().trim().min(6, 'Name must be at least 6 characters').required('Name Required'),

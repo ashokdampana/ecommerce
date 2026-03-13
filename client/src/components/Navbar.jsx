@@ -1,54 +1,80 @@
+/* eslint-disable no-unused-vars */
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import { useAuthContext } from '../context/AuthContext';
 import { CartContext } from '../context/CartContext.jsx';
 
-
 const Navbar = () => {
-  const { user } = useContext(AuthContext);
+  const { user, isAuthenticated } = useAuthContext();
+
   return (
-    <nav className="flex items-center justify-between p-4 bg-gray-800 text-white">
-      <Link to="/" className="text-lg font-semibold">Clothes</Link>
-      <div className='flex gap-4'>
-        <Link to='/?category=men' className='hover:text-gray-300'>Men</Link>
-        <Link to='/?category=women' className='hover:text-gray-300'>Women</Link>
-        <Link to='/?category=kids' className='hover:text-gray-300'>Kids</Link>
+    <nav className="flex items-center justify-between p-4 bg-gray-900 text-white shadow-md">
+      {/* Brand Logo */}
+      <Link to="/" className="text-xl font-bold tracking-tight text-blue-400">
+        CLOTHES
+      </Link>
+
+      {/* Categories */}
+      <div className="hidden md:flex gap-6">
+        <Link to="/?category=men" className="hover:text-blue-400 transition-colors">Men</Link>
+        <Link to="/?category=women" className="hover:text-blue-400 transition-colors">Women</Link>
+        <Link to="/?category=kids" className="hover:text-blue-400 transition-colors">Kids</Link>
       </div>
-      <div className="space-x-4">
-        {user ? <SelectOptions/> : <AuthLinks />}
+
+      {/* Auth & Cart Actions */}
+      <div className="flex items-center gap-4">
+        {isAuthenticated ? <UserActions /> : <AuthLinks />}
       </div>
     </nav>
   );
 };
 
 const AuthLinks = () => (
-  <>
-    <Link to="/login" className="hover:underline">Login</Link>
-    <Link to="/register" className="hover:underline">Register</Link>
-  </>
+  <div className="flex gap-4 items-center text-sm font-medium">
+    <Link to="/login" className="hover:text-blue-400 transition-colors">Login</Link>
+    <Link to="/register" className="bg-blue-600 px-4 py-1 rounded hover:bg-blue-700 transition-colors">
+      Register
+    </Link>
+  </div>
 );
 
-const SelectOptions = () => {
+const UserActions = () => {
   const navigate = useNavigate();
+  const { logout, user } = useAuthContext();
   const { cartItems } = useContext(CartContext);
-  const itemCount = cartItems.reduce((sum, i) => sum + i.qty, 0);
+  
+  // Calculate total items in cart
+  const itemCount = cartItems.reduce((sum, item) => sum + item.qty, 0);
+
+  const handleLogout = () => {
+    logout(); // 1. Updates Context state
+    navigate('/login'); // 2. Redirects
+  };
 
   return (
-    <div className="flex items-center gap-4">
-      <Link to="/profile" className="hover:text-gray-300">Profile</Link>
-      <Link to="/cart" className="hover:text-gray-300">
-        Cart {itemCount > 0 && `(${itemCount})`}
+    <div className="flex items-center gap-5 text-sm font-medium">
+      {/* Cart with Badge */}
+      <Link to="/cart" className="relative hover:text-blue-400 transition-colors">
+        Cart
+        {itemCount > 0 && (
+          <span className="absolute -top-2 -right-3 bg-red-500 text-[10px] text-white px-1.5 rounded-full">
+            {itemCount}
+          </span>
+        )}
       </Link>
-      {/* For logout, you'll eventually want a button, but Link works for now */}
-      <button className="text-red-400 hover:text-red-300" 
-        onClick={() => { 
-          localStorage.clear('user');
-          localStorage.clear('token')
-          navigate('/login');
-        }}
-      >Logout</button>
+
+      <Link to="/profile" className="hover:text-blue-400 transition-colors">
+        {user?.username || 'Profile'}
+      </Link>
+
+      <button 
+        onClick={handleLogout}
+        className="text-red-400 hover:text-red-500 font-bold cursor-pointer"
+      >
+        Logout
+      </button>
     </div>
   );
 };
 
-export default Navbar;  
+export default Navbar;

@@ -2,7 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import useAuthContext from '../context/AuthContext.jsx';
+import { useAuthContext } from '../context/AuthContext.jsx';
 import useTanMutation from '../hooks/useTanMutation.js';
 
 const loginSchema = Yup.object().shape({
