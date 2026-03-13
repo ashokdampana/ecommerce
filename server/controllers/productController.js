@@ -5,7 +5,6 @@ const AppError = require('../utils/AppError.js');
 exports.getProducts = asyncHandler(async (req, res) => {
   const { category } = req.query;
   const products = await Product.find(category ? { category: category } : {}).lean();
-  await redisClient.setEx(cacheKey, 300, JSON.stringify(products));
 
   res.status(200).json({ products, cached: false });
 });
