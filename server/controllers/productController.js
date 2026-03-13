@@ -1,17 +1,9 @@
 const asyncHandler = require('express-async-handler');
 const Product = require('../models/Product.js');
 const AppError = require('../utils/AppError.js');
-const redisClient = require('../config/redisClient.js');
 
 exports.getProducts = asyncHandler(async (req, res) => {
   const { category } = req.query;
-
-  const cacheKey = category ? `products:${category}` : 'products:all';
-  const cached = await redisClient.get(cacheKey);
-  if (cached) {
-    console.log('Cache hit products')
-    return res.status(200).json({ products: JSON.parse(cached), cached: true });
-  }
   const products = await Product.find(category ? { category: category } : {}).lean();
   await redisClient.setEx(cacheKey, 300, JSON.stringify(products));
 
@@ -34,7 +26,6 @@ exports.createProduct = asyncHandler(async (req, res) => {
   
   const newProduct = await Product.create({ name, category: category.toLowerCase(), price, description, image });
 
-  await redisClient.del('products:all');
   res.status(201).json({ success: true, message: 'Product Added', product: newProduct });
 });
 
@@ -47,7 +38,6 @@ exports.updateProduct = asyncHandler(async (req, res) => {
   if ( !updatedProduct) {
     throw new AppError('Something went wrong. Try later...');
   }
-  await redisClient.del('products:all');
   res.status(200).json({success: true, message: 'Product Updated', product: updatedProduct});
 })
 
@@ -57,7 +47,6 @@ exports.deleteProduct = asyncHandler(async (req, res) => {
   if ( !deletedProduct) {
     throw new AppError('Something went wrong. Try later...');
   }
-  await redisClient.del('products:all');
   res.status(200).json({success: true, message: 'Product Deleted', product: deletedProduct});
 })
 
