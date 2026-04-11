@@ -1,24 +1,16 @@
-// middleware/errorHandler.js
+
 const errorHandler = (err, req, res, next) => {
-  let statusCode = err.statusCode || 500;
-  let message = err.message;
+  const statusCode = err.statusCode || 500;
 
-  // Handle JWT errors
-  if (err.name === "TokenExpiredError") {
-    statusCode = 401;
-    message = "Token expired";
-  }
+  const errorResponse = {
+    success: false,
+    statusCode,
+    message: err.message || "Internal Server Error",
+    error: err.name,
+    timeStamps: Date.now()
+  };
 
-  if (err.name === "JsonWebTokenError") {
-    statusCode = 401;
-    message = "Invalid token";
-  }
-
-  res.status(statusCode).json({
-    status: "error",
-    message,
-    stack: process.env.NODE_ENV === "development" ? err.stack : null,
-  });
+  res.status(statusCode).json(errorResponse);
 };
 
 module.exports = errorHandler;

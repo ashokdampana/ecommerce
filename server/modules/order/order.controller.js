@@ -1,7 +1,7 @@
 // Order controller with full CRUD logic
 const asyncHandler = require('express-async-handler');
-const Order = require('./Order');
 const AppError = require('../../utils/AppError');
+const orderService = require('./order.service');
 
 // create an order for authenticated user
 exports.createOrder = asyncHandler(async (req, res) => {
@@ -19,18 +19,18 @@ exports.createOrder = asyncHandler(async (req, res) => {
     product: item.product,
   }));
 
-  const order = await Order.create({
-    user: req.user.id || req.user._id,
-    orderItems: items,
-    totalPrice: totalPrice || items.reduce((sum, i) => sum + i.price * i.qty, 0),
-  });
+  const order = await orderService.createOrder(
+    req.user.id || req.user._id,
+    items,
+    totalPrice || items.reduce((sum, i) => sum + i.price * i.qty, 0)
+  );
 
   res.status(201).json({ success: true, order });
 });
 
 // get order by id, only owner or admin
 exports.getOrderById = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id).populate('user', 'name email');
+  const order = await orderService.getOrderById(req.params.id);
   if (!order) {
     throw new AppError('Order not found', 404);
   }
@@ -45,13 +45,13 @@ exports.getOrderById = asyncHandler(async (req, res) => {
 
 // get orders for the current user
 exports.getMyOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({ user: req.user.id || req.user._id });
+  const orders = await orderService.getOrdersByUser(req.user.id || req.user._id);
   res.json({ success: true, orders });
 });
 
 // admin only: list all orders
 exports.getOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find().populate('user', 'name email');
+  const orders = await orderService.getAllOrders();
   res.json({ success: true, orders });
 });
 
