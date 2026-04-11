@@ -1,7 +1,7 @@
 // Order controller with full CRUD logic
 const asyncHandler = require('express-async-handler');
-const Order = require('../models/Order');
-const AppError = require('../utils/AppError');
+const Order = require('./Order');
+const AppError = require('../../utils/AppError');
 
 // create an order for authenticated user
 exports.createOrder = asyncHandler(async (req, res) => {

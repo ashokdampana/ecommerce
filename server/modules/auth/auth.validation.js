@@ -1,5 +1,5 @@
 const { z } = require('zod');
-const AppError = require('../utils/AppError');
+const AppError = require('../../utils/AppError');
 
 exports.registerValid = (req, res, next) => {
     const registerSchema = z.object({

@@ -1,14 +1,14 @@
 // Placeholder authentication controller
 const asyncHandler = require('express-async-handler');
-const User = require('../models/User.js');
-const AppError = require('../utils/AppError.js');
+const User = require('../user/user.model.js');
+const AppError = require('../../utils/AppError.js');
 const jwt = require('jsonwebtoken');
+const userService = require('../user/user.service.js')
 
-
-exports.registerUser = asyncHandler(async (req, res) => {
+const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
   // check if user exists
-  const existingUser = await User.findOne({ email });
+  const existingUser = await userService.findUserByEmail(email);
   if (existingUser) {
     throw new AppError("User Already Exists", 400);
   }
@@ -27,10 +27,12 @@ exports.registerUser = asyncHandler(async (req, res) => {
 });
 
 
-exports.loginUser = asyncHandler(async (req, res) => {
-  // TODO: implement login logic
+const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email }).select("+password");
+  // check if user exists
+  const user = await userService.findUserByEmail(email, {
+    includePassword: true
+  })
   if ( !user) {
     throw new AppError('Invalid Credentials', 400);
   }
@@ -48,8 +50,12 @@ exports.loginUser = asyncHandler(async (req, res) => {
   res.json({ success: true, message: 'User Logged In', token , user: userDetails});
 })
 
-exports.check_me = asyncHandler(async(req, res) => {
+
+const check_me = asyncHandler(async(req, res) => {
   const userInfo = req.user;
-  // console.log('userInfo from check_me : ', userInfo);
   return res.json({message: 'Userinfo', user : userInfo})
 })
+
+module.exports = {
+  registerUser, loginUser, check_me
+}
