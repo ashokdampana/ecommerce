@@ -5,7 +5,7 @@ const sendResponse = (res, message='', statusCode=200, data={}, dataKey='data') 
     statusCode,
     message,
     [dataKey]: data,
-    timeStamps: Date.now()
+    timeStamp: new Date().toISOString()
   }
 
   res.status(statusCode).json( response);

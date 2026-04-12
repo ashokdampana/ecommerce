@@ -12,9 +12,9 @@ const findUserByEmail = (email, options = {}) => {
 
 const findUserById = (id) => User.findById(id);
 
-const createUser = (body) => {
-  const { name, email, password } = body
-  return User.create({name, email, password, role: 'User'})
+const createUser = ({ name, email, password }) => {
+  const newUser = new User({name, email, password, role: 'user'})
+  return newUser.save();
 }
 
 module.exports = {

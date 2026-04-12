@@ -1,11 +1,13 @@
 /* eslint-disable no-unused-vars */
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuthContext } from '../context/AuthContext';
-import { CartContext } from '../context/CartContext.jsx';
+import { useAuthStore } from '../stores/useAuthStore.js';
+import { useCartStore } from '../stores/useCartStore.js';
 
 const Navbar = () => {
-  const { user, isAuthenticated } = useAuthContext();
+  const user = useAuthStore((state) => state.user);
+  const token = useAuthStore((state) => state.token);
+  const isAuthenticated = Boolean(user && token);
 
   return (
     <nav className="flex items-center justify-between p-4 bg-gray-900 text-white shadow-md">
@@ -40,14 +42,15 @@ const AuthLinks = () => (
 
 const UserActions = () => {
   const navigate = useNavigate();
-  const { logout, user } = useAuthContext();
-  const { cartItems } = useContext(CartContext);
-  
+  const logout = useAuthStore((state) => state.logout);
+  const user = useAuthStore((state) => state.user);
+  const cartItems = useCartStore((state) => state.cartItems);
+
   // Calculate total items in cart
   const itemCount = cartItems.reduce((sum, item) => sum + item.qty, 0);
 
   const handleLogout = () => {
-    logout(); // 1. Updates Context state
+    logout(); // 1. Updates auth store state
     navigate('/login'); // 2. Redirects
   };
 

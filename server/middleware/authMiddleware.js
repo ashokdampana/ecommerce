@@ -1,16 +1,16 @@
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
-const AppError = require("../utils/AppError");
+const sendError = require("../utils/sendError");
 
 
 const protect = asyncHandler(async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
-    throw new AppError("Not authorized", 401);
+    throw new sendError("Not authorized", 401);
   }
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const decoded = jwt.verify(token, process.env.JWT_ACCESS_KEY);
   req.user = decoded;
   next();
 });

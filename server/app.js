@@ -1,3 +1,6 @@
+const dns = require('node:dns');
+dns.setServers(['8.8.8.8', '8.8.4.4']);
+
 const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
@@ -7,9 +10,9 @@ const helmet = require('helmet');
 const errorHandler = require('./middleware/errorMiddleware');
 const protect = require('./middleware/authMiddleware.js')
 
-const authRoutes = require('./routes/authRoutes');
-const productRoutes = require('./routes/productRoutes');
-const orderRoutes = require('./routes/orderRoutes');
+const authRoutes = require('./modules/auth/auth.route.js');
+const productRoutes = require('./modules/product/product.route.js');
+const orderRoutes = require('./modules/order/order.route.js');
 
 dotenv.config();
 const app = express();
@@ -31,9 +34,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', protect, productRoutes);
 app.use('/api/orders', orderRoutes);
 
-// page not found
+// Route not found
 app.use((req, res, next) => {
-  throw new AppError(`Not Found - ${req.originalUrl}!`, 404);
+  next(new Error('Route Not Found', 404));
 });
 
 app.use(errorHandler);

@@ -1,5 +1,5 @@
 const { z } = require('zod');
-const AppError = require('../../utils/AppError');
+const sendError = require('../../utils/sendError');
 
 exports.registerValid = (req, res, next) => {
     const registerSchema = z.object({
@@ -10,7 +10,7 @@ exports.registerValid = (req, res, next) => {
     const result = registerSchema.safeParse(req.body);
     if (!result.success) {
         const message = result.error.errors.map((e) => e.message).join(', ');
-        throw new AppError(message, 400);
+        throw new sendError(message, 400);
     }
     next();
 };
@@ -24,7 +24,7 @@ exports.loginValid = (req, res, next) => {
     const result = loginSchema.safeParse(req.body);
     if (!result.success) {
         const message = result.error.errors.map((e) => e.message).join(', ');
-        throw new AppError(message, 400);
+        throw new sendError(message, 400);
     }
     next();
 };

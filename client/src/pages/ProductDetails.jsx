@@ -1,11 +1,11 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import api from "../services/api.js";
 import ProductForm from "../components/ProductForm.jsx";
-import { CartContext } from "../context/CartContext.jsx";
+import { useCartStore } from "../stores/useCartStore.js";
 
 const ProductDetails = () => {
-  const { addToCart } = useContext(CartContext);
+  const addToCart = useCartStore((state) => state.addToCart);
   const { id } = useParams(); // get product id from URL
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);

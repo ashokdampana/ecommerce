@@ -1,10 +1,9 @@
-import { useContext } from "react";
 import { Link } from "react-router-dom";
-import { CartContext } from "../context/CartContext.jsx";
+import { useCartStore } from "../stores/useCartStore.js";
 import useTanQuery from "../hooks/useTanQuery.js";
 
 const ProductsList = ({ filter }) => {
-  const { addToCart } = useContext(CartContext);
+  const addToCart = useCartStore((state) => state.addToCart);
 
   const { data, isLoading, isError } = useTanQuery(
     filter ? `/api/products?category=${filter}` : "/api/products",

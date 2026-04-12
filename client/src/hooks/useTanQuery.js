@@ -4,7 +4,7 @@ import api from '../services/api'
 function useTanQuery(url, key, options = {}) {
   const fn = async () => {
     const res = await api.get(url);
-    return res.data;
+    return res.data.data ?? res.data;
   };
 
   return useQuery({

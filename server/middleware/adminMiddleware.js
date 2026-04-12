@@ -1,9 +1,9 @@
 const asyncHandler = require('express-async-handler');
-const AppError = require('../utils/AppError');
+const sendError = require('../utils/sendError');
 
 const admin = asyncHandler((req, res, next) => {
   if (!req.user || !req.user.isAdmin) {
-    throw new AppError('Admin privileges required', 403);
+    throw new sendError('Admin privileges required', 403);
   }
   next();
 });

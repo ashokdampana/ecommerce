@@ -1,4 +1,4 @@
-const Order = require('./Order');
+const Order = require('./order.model');
 
 const createOrder = (userId, orderItems, totalPrice) => {
   return Order.create({

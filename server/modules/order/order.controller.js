@@ -1,6 +1,6 @@
 // Order controller with full CRUD logic
 const asyncHandler = require('express-async-handler');
-const AppError = require('../../utils/AppError');
+const sendError = require('../../utils/sendError');
 const orderService = require('./order.service');
 
 // create an order for authenticated user
@@ -8,7 +8,7 @@ exports.createOrder = asyncHandler(async (req, res) => {
   const { orderItems, totalPrice } = req.body;
 
   if (!orderItems || orderItems.length === 0) {
-    throw new AppError('No order items provided', 400);
+    throw new sendError('No order items provided', 400);
   }
 
   const items = orderItems.map((item) => ({
@@ -32,12 +32,12 @@ exports.createOrder = asyncHandler(async (req, res) => {
 exports.getOrderById = asyncHandler(async (req, res) => {
   const order = await orderService.getOrderById(req.params.id);
   if (!order) {
-    throw new AppError('Order not found', 404);
+    throw new sendError('Order not found', 404);
   }
 
   const isOwner = order.user._id.toString() === (req.user.id || req.user._id).toString();
   if (!isOwner && !req.user.isAdmin) {
-    throw new AppError('Not authorized to view this order', 403);
+    throw new sendError('Not authorized to view this order', 403);
   }
 
   res.json({ success: true, order });

@@ -7,7 +7,7 @@ const errorHandler = (err, req, res, next) => {
     statusCode,
     message: err.message || "Internal Server Error",
     error: err.name,
-    timeStamps: Date.now()
+    timeStamp: new Date().toISOString()
   };
 
   res.status(statusCode).json(errorResponse);

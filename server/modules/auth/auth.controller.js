@@ -16,7 +16,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   // create new user
-  const newUser = await userService.createUser(name, email, password);
+  const newUser = await userService.createUser({name, email, password});
   if (!newUser) {
     throw new sendError("Something went wrong. Please try again later", 500);
   }
@@ -26,7 +26,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // user details to client
 
-  sendResponse(res, "User registered successfully", 201, { 
+  sendResponse(res, "User Registered Successfully", 201, { 
     name: newUser.name, 
     email: newUser.email, 
     role: newUser.role, 
@@ -54,7 +54,7 @@ const loginUser = asyncHandler(async (req, res) => {
   // generate token
   const token = tokenHelper.generateAccessToken(user);
 
-  sendResponse(res, "User logged in successfully", 200, { 
+  sendResponse(res, "User Login Successfully", 200, { 
     name: user.name, 
     email: user.email, 
     role: user.role, 

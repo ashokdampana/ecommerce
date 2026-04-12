@@ -1,10 +1,12 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CartContext } from '../context/CartContext.jsx';
+import { useCartStore } from '../stores/useCartStore.js';
 import useTanMutation from '../hooks/useTanMutation.js';
 
 const Cart = () => {
-  const { cartItems, removeFromCart, clearCart } = useContext(CartContext);
+  const cartItems = useCartStore((state) => state.cartItems);
+  const removeFromCart = useCartStore((state) => state.removeFromCart);
+  const clearCart = useCartStore((state) => state.clearCart);
   const navigate = useNavigate();
 
 
