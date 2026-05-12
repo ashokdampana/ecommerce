@@ -10,7 +10,7 @@ const ProductDetails = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
-  const [showProductForm, setShowProductForm] = useState(false); // use boolean for clarity
+  const [showProductForm, setShowProductForm] = useState(false);
 
 
   useEffect(() => {
@@ -31,6 +31,7 @@ const ProductDetails = () => {
 
   if (loading) return <p>Loading...</p>;
   if (!product) return <p>Product not found</p>;
+  console.log('=> product in details : ', product);
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -76,7 +77,7 @@ const ProductDetails = () => {
 
       {showProductForm && (
         <div className="mt-6">
-          <ProductForm product={product} />
+          <ProductForm product={product} method="PATCH" id={product._id} />
         </div>
       )}
     </div>

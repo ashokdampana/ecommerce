@@ -6,13 +6,17 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
+const mongoSanitize = require('express-mongo-sanitize');
 
+const limiter = require('./utils/limiter');
 const errorHandler = require('./middleware/errorMiddleware');
 const protect = require('./middleware/authMiddleware.js')
 
 const authRoutes = require('./modules/auth/auth.route.js');
 const productRoutes = require('./modules/product/product.route.js');
 const orderRoutes = require('./modules/order/order.route.js');
+const emailRoutes = require('./modules/email/email.route.js');
 
 dotenv.config();
 const app = express();
@@ -24,6 +28,8 @@ app.use( cors({
   })
 );
 app.use(morgan('dev'));
+app.use(cookieParser());
+app.use(mongoSanitize());
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -31,8 +37,9 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/auth', authRoutes);
-app.use('/api/products', protect, productRoutes);
-app.use('/api/orders', orderRoutes);
+app.use('/api/products', limiter, protect, productRoutes);
+app.use('/api/orders', limiter, protect, orderRoutes);
+app.use('/api/email', emailRoutes);
 
 // Route not found
 app.use((req, res, next) => {

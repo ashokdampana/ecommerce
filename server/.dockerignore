@@ -1,0 +1,20 @@
+
+# Ignore node modules and environment files
+node_modules
+.env
+.git
+
+# Ignore logs and temporary files
+logs
+*.log
+tmp
+
+# Ignore build artifacts
+dist
+build
+
+# Ignore IDE and editor files
+.vscode
+.idea
+*.suo
+

@@ -2,8 +2,10 @@
 const app = require('../../app');
 const request = require('supertest');
 
-const registerUser = {"name": "Alice Johnson",
-    "email": "alice@example.com", "password": "hashedpassword123"
+const registerUser = {
+  "name": "Alice Johnson",
+  "email": "alice@example.com", 
+  "password": "hashedpassword123"
 }
 
 

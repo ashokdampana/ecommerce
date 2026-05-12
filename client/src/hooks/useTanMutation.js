@@ -12,8 +12,11 @@ function useTanMutation(method, url, key) {
 
   return useMutation({
     mutationFn,
-    mutationKey: key ? [key] : undefined,
-    onSuccess: (data) => {
+    mutationKey: [key],
+    onSuccess: (data, variables, context) => {
+      if (variables?.options?.onSuccess) {
+        variables.options.onSuccess(data);
+      }
       if (key) queryClient.invalidateQueries({ queryKey: [key] });
       toast.success(data?.message || "Success!");
     },

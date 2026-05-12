@@ -22,6 +22,7 @@ export const useCartStore = create(
     }),
     {
       name: 'cartItems', // key in localStorage
+      getStorage: () => localStorage,
     }
   )
 );

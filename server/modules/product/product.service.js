@@ -1,8 +1,7 @@
 const Product = require('./product.model.js');
 
 const getProducts = async (category) => {
-  const products = await Product.find(category ? { category } : {}).lean();
-  return { products, cached: false };
+  return await Product.find(category ? { category } : {}).lean();
 };
 
 const getProductById = async (id) => {

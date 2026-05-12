@@ -10,7 +10,7 @@ const protect = asyncHandler(async (req, res, next) => {
     throw new sendError("Not authorized", 401);
   }
 
-  const decoded = jwt.verify(token, process.env.JWT_ACCESS_KEY);
+  const decoded = jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET);
   req.user = decoded;
   next();
 });

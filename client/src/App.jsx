@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import api from './services/api.js';
+import { useAuthStore } from './stores/useAuthStore.js';
 
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -16,6 +18,35 @@ import OrderDetails from './pages/OrderDetails';
 import ProtectedRoute from './components/ProtectedRoutes';
 
 function App() {
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const logout = useAuthStore((state) => state.logout);
+  const accessToken = useAuthStore((state) => state.accessToken);
+
+  useEffect(() => {
+    const verifyUserSession = async () => {
+      if (!accessToken) {
+        setIsCheckingAuth(false);
+        return;
+      }
+
+      try {
+        await api.get('/api/auth/check_me');
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          logout();
+        }
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    };
+
+    verifyUserSession();
+  }, [logout]);
+
+  if (isCheckingAuth) {
+    return <div className="page-center"><h2>Loading...</h2></div>;
+  }
+
   return (
     <Router>
       <Navbar />

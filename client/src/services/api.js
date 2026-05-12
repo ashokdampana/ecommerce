@@ -1,36 +1,50 @@
 import axios from 'axios';
+import { useAuthStore } from '../stores/useAuthStore';
 
-const API_URL = import.meta.env.VITE_API_URL
-console.log('api backend url: ', API_URL);
+const API_URL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
   baseURL: API_URL,
-  withCredentials: true,
-  timeout: 10000,
+  withCredentials: true, // ✅ important
 });
 
-// Request interceptor
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) config.headers.Authorization = `Bearer ${token}`;
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+// Attach access token
+api.interceptors.request.use(config => {
+  const token = useAuthStore.getState().accessToken;
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 
-// Response interceptor
+// Refresh logic
 api.interceptors.response.use(
-  (response) => response,
+  res => res,
   async (error) => {
-    const status = error.response?.status;
+    const original = error.config;
 
-    if (status === 401) {
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
-      
-      window.location.href = '/login';
+    if (error.response?.status === 401 && !original._retry) {
+      original._retry = true;
+
+      try {
+        const res = await axios.post(
+          `${API_URL}/auth/refresh-token`,
+          {},
+          { withCredentials: true } // cookie sent automatically
+        );
+
+        const newToken = res.data.data.accessToken;
+
+        // update Zustand
+        useAuthStore.getState().refreshToken(newToken);
+
+        original.headers.Authorization = `Bearer ${newToken}`;
+        return api(original);
+
+      } catch (err) {
+        useAuthStore.getState().logout();
+        window.location.href = '/login';
+      }
     }
+
     return Promise.reject(error);
   }
 );

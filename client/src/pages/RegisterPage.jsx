@@ -13,25 +13,23 @@ const registerSchema = Yup.object().shape({
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-  const login = useAuthStore((state) => state.login);
+  const setAuth = useAuthStore(s => s.setAuth);
   
-  const { mutate, isPending, isError, error } = useTanMutation('POST', '/api/auth/register', ['register']);
+  const { mutate: register, isPending, isError, error } = useTanMutation('POST', '/api/auth/register', ['register']);
 
   const handleSubmit = (values) => {
-    mutate({ body: values }, 
-      { onSuccess: (data) => {
-        // automatically sign in the new user
-        if (data?.user && data?.token) {
-          login(data.user, data.token);
-          navigate('/');
-        } else {
+    register({
+      body: values,
+      options: {
+        onSuccess: () => {
           navigate('/login');
-        }
-      }}
-    );
+        },
+      },
+    });
   };
 
   if (isPending) return <div className="page-center">Creating account...</div>;
+  if (isError) return <div className="page-center error">Error: {error?.message}</div>;
 
   return (
     <div className="page-center">
@@ -59,7 +57,7 @@ const RegisterPage = () => {
 
               <div>
                 <label>Password</label>
-                <Field name="password" type="password" className="form-input" placeholder="••••••••" />
+                <Field name="password" type="password" className="form-input" placeholder="Password" />
                 <ErrorMessage name="password" component="div" className="form-error" />
               </div>
 

@@ -13,7 +13,8 @@ const ProductsList = ({ filter }) => {
   if (isLoading) return <div className="page-center"><h2>Loading products...</h2></div>;
   if (isError) return <div className="page-center"><p className="form-error">Failed to load products.</p></div>;
 
-  const products = data?.products || [];
+  const { products } = data;
+  console.log('=> products from API: ', products);
 
   return (
     <div className="p-4">

@@ -1,29 +1,50 @@
 const jwt = require('jsonwebtoken');
 
+// Email purpose
+const generateEmailToken = (userId) => {
+  return jwt.sign({ userId }, process.env.JWT_EMAIL_TOKEN_SECRET, { expiresIn: '15m' });
+};
+
+// Authentication purpose
 const generateAccessToken = (user) => {
-  const payload = { id: user._id, role: user.role };
+  console.log("Generating Access Token");
+  return jwt.sign(
+    { id: user._id, role: user.role },
+    process.env.JWT_ACCESS_TOKEN_SECRET,
+    { expiresIn: '15m' }
+  );
+};
 
-  return jwt.sign(payload, process.env.JWT_ACCESS_KEY, {
-    expiresIn: "15m",
-    issuer: "mern-ecommerce"
-  });
-}
-
-
+// Refresh token purpose
 const generateRefreshToken = (user) => {
-  const payload = { id: user._id, role: user.role };
+  const refreshToken = jwt.sign(
+    { id: user._id },
+    process.env.JWT_REFRESH_TOKEN_SECRET,
+    { expiresIn: '7d' }
+  );
 
-  return jwt.sign(payload, process.env.JWT_REFRESH_KEY, {
-    expiresIn: "7d",
-    issuer: "mern-ecommerce"
-  });
+  const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', // true in prod
+    sameSite: 'strict',
+    path: '/api/auth/refresh-token',
+  };
+
+  return { refreshToken, cookieOptions };
+};
+
+const verifyEmailToken = (token) => {
+  return jwt.verify(token, process.env.JWT_EMAIL_TOKEN_SECRET);
 }
 
+const verifyRefreshToken = (token) => {
+  return jwt.verify(token, process.env.JWT_REFRESH_TOKEN_SECRET);
+};
 
-const verifyToken = (token) => {
-  return jwt.verify(token, process.env.JWT_ACCESS_KEY);
-}
-
-module.exports = { 
-  generateAccessToken, verifyToken
+module.exports = {
+  generateEmailToken,
+  generateAccessToken,
+  generateRefreshToken,
+  verifyEmailToken,
+  verifyRefreshToken,
 };

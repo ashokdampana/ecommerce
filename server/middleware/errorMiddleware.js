@@ -2,6 +2,8 @@
 const errorHandler = (err, req, res, next) => {
   const statusCode = err.statusCode || 500;
 
+  console.error(`Error: ${err.stack.split('\n')[0]}`);
+
   const errorResponse = {
     success: false,
     statusCode,
